@@ -2,8 +2,9 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-const newG = require('./gmodule').newIOServer;
+const newG = require('./globby').newIOServer;
 
+console.log(io)
 
 app.use('/static', express.static('public'))
 

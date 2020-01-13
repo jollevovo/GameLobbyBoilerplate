@@ -108,7 +108,6 @@ module.exports.newIOServer = function newServer(baseState,moveFunction,maxPlayer
     let g = newGame(baseState,moveFunction,maxPlayers,timeFunction);
     var lobby = new g();
     io.on('connection', function(socket){
-        console.log('connect')
         let helperFunctionDelay = function(){
             setTimeout(()=>{
 
