@@ -8,6 +8,7 @@ let socket = io();
 
 socket.on('returnState', (state) => {
                 //Draw the game
+                console.log(state)
             }) // Return State
 
 socket.emit('move',{type:'moveX',speed:-50}) // Send Move

@@ -1,4 +1,11 @@
-const newGame = function(baseState,moveFunction,maxPlayers=2,timeFunction){
+const newGame = function(properties){
+    let baseState = properties.baseState || {};
+    
+    const timeFunction = properties.timeFunction || function(player,move,state){};
+    const moveFunction = properties.moveFunction || function(state){};
+    const maxPlayers = properties.maxPlayers || 2;
+    
+
     const lobby = function(){
         this.games = [];
         
@@ -54,6 +61,7 @@ const newGame = function(baseState,moveFunction,maxPlayers=2,timeFunction){
   
             let state = JSON.parse(JSON.stringify(baseState));
             state.players = this.players;
+            state.started = false;
             
   
             this.playerId = '';
@@ -121,10 +129,12 @@ const newGame = function(baseState,moveFunction,maxPlayers=2,timeFunction){
 module.exports.newGame =  newGame;
 
 
-module.exports.newIOServer = function newServer(baseState,moveFunction,maxPlayers=2,timeFunction,io){
-    let g = newGame(baseState,moveFunction,maxPlayers,timeFunction);
-    var lobby = new g();
-    let helperFunctionDelay = function(){
+module.exports.newIOServer = function newServer(properties,io){
+    let g = newGame(properties);
+    const frameRate = properties.delay || 100;
+    const lobby = new g();
+    
+    const helperFunctionDelay = function(){
         setTimeout(()=>{
             lobby.games.forEach((game) => {
                 if(!game.players.length){
@@ -137,7 +147,7 @@ module.exports.newIOServer = function newServer(baseState,moveFunction,maxPlayer
                 }
             })
             helperFunctionDelay();
-        },100)
+        },frameRate)
     }
     helperFunctionDelay();
 

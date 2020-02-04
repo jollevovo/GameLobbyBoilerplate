@@ -4,22 +4,28 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const newG = require('./globby').newIOServer;
 
-console.log(io)
 
 app.use('/static', express.static('public'))
 
 newG({
+  baseState:{
     //Starting State
-},
-function(player,move,state){
+    test:5
+  },
+  moveFunction:function(player,move,state){
+    
     //State Change on Move
+  },
+  maxPlayers:3, // Number of Players you want in a single game
+  timeFunction:function(state){
+    state.test +=5;
+    //State Change on every frame
+  }
 },
-2, // Number Of Players
-function(state){
-    //State Change on Time
-},
-io
-)
+
+io)
+
+
 
 
 
