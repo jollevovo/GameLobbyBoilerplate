@@ -84,10 +84,15 @@ const newGame = function(properties){
                 return this.returnState();
             }
 
-            this.timeFunction = () => {
+            this.timeFunction = (playerId) => {
+                
                 if(state.players.length < maxPlayers  && state.started === false){
                     return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
                 }
+
+                const player = state.players.find((pl) => {
+                    return pl.id == playerId
+                })
 
                 state.started = true;
                 if(timeFunction != undefined){
@@ -142,7 +147,7 @@ module.exports.newIOServer = function newServer(properties,io){
                 }
                 else{
                     game.players.forEach((player) => {
-                        io.to(player.id).emit('returnState',game.timeFunction())
+                        io.to(player.id).emit('returnState',game.timeFunction(player.id))
                     })
                 }
             })
