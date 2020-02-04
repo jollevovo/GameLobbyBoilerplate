@@ -90,9 +90,6 @@ const newGame = function(properties){
                     return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
                 }
 
-                const player = state.players.find((pl) => {
-                    return pl.id == playerId
-                })
 
                 state.started = true;
                 if(timeFunction != undefined){
