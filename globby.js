@@ -4,6 +4,9 @@ const newGame = function(properties){
     const timeFunction = properties.timeFunction || function(player,move,state){};
     const moveFunction = properties.moveFunction || function(state){};
     const maxPlayers = properties.maxPlayers || 2;
+    const statePresenter = properties.statePresenter || function(copyState,playerId){
+        return copyState
+    }
     
 
     const lobby = function(){
@@ -81,7 +84,7 @@ const newGame = function(properties){
                 state.started = true;
 
                 moveFunction(player, move,state)
-                return this.returnState();
+                return this.returnState(playerId);
             }
 
             this.timeFunction = (playerId) => {
@@ -93,14 +96,15 @@ const newGame = function(properties){
 
                 state.started = true;
                 if(timeFunction != undefined){
-                    timeFunction(state)
+                    timeFunction(state,playerId)
                 }
 
-                return this.returnState();
+                return this.returnState(playerId);
             }
   
-            this.returnState = () => {
+            this.returnState = (playerId) => {
                 let copyState =  JSON.parse(JSON.stringify(state));
+                copyState = statePresenter(copyState,playerId)
                 return copyState
             }
   
@@ -109,7 +113,7 @@ const newGame = function(properties){
                     this.players.push({id:playerId,ref:'player'+(this.players.length+1)});
   
                     state.players = this.players;
-                    return this.returnState();
+                    return this.returnState(playerId);
                 }
                 else{
                     return undefined

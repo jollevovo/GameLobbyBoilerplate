@@ -20,6 +20,9 @@ newG({
   timeFunction:function(state){
     state.test +=5;
     //State Change on every frame
+  },
+  statePresenter:function(state,playerId){
+    return state.test;
   }
 },
 
