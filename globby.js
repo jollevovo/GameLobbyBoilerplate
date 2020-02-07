@@ -4,10 +4,19 @@ const newGame = function(properties){
     const timeFunction = properties.timeFunction || function(player,move,state){};
     const moveFunction = properties.moveFunction || function(state){};
     const maxPlayers = properties.maxPlayers || 2;
+    const minPlayers = properties.minPlayers || maxPlayers;
     const statePresenter = properties.statePresenter || function(copyState,playerRef){
         return copyState
     }
+
+
+    const connectFunction = properties.connectFunction || function(state,playerRef){
+
+    }
     
+    const disconnectFunction = properties.disconnectFunction || function(state,playerRef){
+
+    }
 
     const lobby = function(){
         this.games = [];
@@ -27,7 +36,7 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-                    
+
                     return g.players.length < g.maxPlayers && !st.started
                 })
                 if(ga){
@@ -116,9 +125,12 @@ const newGame = function(properties){
   
             this.join = (playerId) => {
                 if(this.players.length < this.maxPlayers){
-                    this.players.push({id:playerId,ref:'player'+(this.players.length+1)});
+                    const player = {id:playerId,ref:'player'+(this.players.length+1)}
+                    this.players.push(player);
   
                     state.players = this.players;
+
+                    connectFunction(state,player.ref)
                     return this.returnState(playerId);
                 }
                 else{
@@ -130,6 +142,8 @@ const newGame = function(properties){
                         return pl.id == playerId;
                     })
                     this.players.splice(this.players.indexOf(pl),1);
+
+                    disconnectFunction(state,pl.ref)
             }
         }
   
@@ -188,7 +202,6 @@ module.exports.newIOServer = function newServer(properties,io){
         
         socket.on('move', (data) =>{
           let state = lobby.move(socket.id,data);
-          
           if(state.players){
             state.players.forEach((pl) => {
                 io.to(pl.id).emit('returnState', state)

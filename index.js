@@ -22,7 +22,14 @@ newG({
     //State Change on every frame
   },
   statePresenter:function(state,playerId){
-    return state.test;
+    return state;
+  },
+  connectFunction:function(state,playerRef){
+    console.log('connected  ', playerRef)
+  },
+  disconnectFunction:function(state,playerRef){
+    console.log('disconnected  ', playerRef)
+
   }
 },
 
