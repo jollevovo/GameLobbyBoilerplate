@@ -36,8 +36,7 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-
-                    return g.players.length < g.maxPlayers && !st.started
+                    return g.players.length < g.maxPlayers && !st.started && maxPlayers === minPlayers || minPlayers < maxPlayers  && st.players.length < maxPlayers
                 })
                 if(ga){
                     ga.join(playerId);
@@ -86,7 +85,10 @@ const newGame = function(properties){
                     return pl.id == playerId
                 })
 
-                if(state.players.length < maxPlayers && state.started === false){
+                if(minPlayers < maxPlayers  && state.players.length < minPlayers){
+                    return {message:"Not Enough Players To Start",required:minPlayers,current:state.players.length}
+                }
+                else if(state.players.length < maxPlayers && state.started === false){
                     return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
                 }
 
@@ -98,7 +100,10 @@ const newGame = function(properties){
 
             this.timeFunction = (playerId) => {
                 
-                if(state.players.length < maxPlayers  && state.started === false){
+                if(minPlayers < maxPlayers && state.players.length < minPlayers){
+                    return {message:"Not Enough Players To Start",required:minPlayers,current:state.players.length}
+                }
+                else if(state.players.length < maxPlayers && state.started === false && maxPlayers === minPlayers){
                     return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
                 }
 
@@ -129,7 +134,7 @@ const newGame = function(properties){
                     this.players.push(player);
   
                     state.players = this.players;
-
+                    
                     connectFunction(state,player.ref)
                     return this.returnState(playerId);
                 }
