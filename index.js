@@ -17,7 +17,7 @@ newG({
     //State Change on Move
   },
   maxPlayers:3, // Number of Players you want in a single game
-  minPlayers:2, 
+  minPlayers:2,
   timeFunction:function(state){
     state.test +=5;
     //State Change on every frame

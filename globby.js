@@ -9,13 +9,27 @@ const newGame = function(properties){
         return copyState
     }
 
-
     const connectFunction = properties.connectFunction || function(state,playerRef){
 
     }
     
     const disconnectFunction = properties.disconnectFunction || function(state,playerRef){
 
+    }
+
+    const serverFunction = properties.serverFunction || function(minPlayers,maxPlayers,currentPlayers,state){
+        /* 
+            Return Undefined to continue and an object to block
+        */
+
+        if(minPlayers < maxPlayers && currentPlayers.length < minPlayers){
+            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
+        }
+        else if(currentPlayers.length < maxPlayers && state.started === false && maxPlayers === minPlayers){
+            return {message:"Not Enough Players To Start",required:maxPlayers,current:currentPlayers.length}
+        }
+
+        return;
     }
 
     const lobby = function(){
@@ -85,13 +99,11 @@ const newGame = function(properties){
                     return pl.id == playerId
                 })
 
-                if(minPlayers < maxPlayers  && state.players.length < minPlayers){
-                    return {message:"Not Enough Players To Start",required:minPlayers,current:state.players.length}
-                }
-                else if(state.players.length < maxPlayers && state.started === false){
-                    return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
-                }
+                const blocker = serverFunction(minPlayers,maxPlayers,state.players,state)
 
+                if(blocker !=undefined){
+                    return blocker;
+                }
                 state.started = true;
 
                 moveFunction(player, move,state)
@@ -100,13 +112,11 @@ const newGame = function(properties){
 
             this.timeFunction = (playerId) => {
                 
-                if(minPlayers < maxPlayers && state.players.length < minPlayers){
-                    return {message:"Not Enough Players To Start",required:minPlayers,current:state.players.length}
-                }
-                else if(state.players.length < maxPlayers && state.started === false && maxPlayers === minPlayers){
-                    return {message:"Not Enough Players To Start",required:maxPlayers,current:state.players.length}
-                }
+                const blocker = serverFunction(minPlayers,maxPlayers,state.players,state)
 
+                if(blocker !=undefined){
+                    return blocker;
+                }
 
                 state.started = true;
                 if(timeFunction != undefined){
