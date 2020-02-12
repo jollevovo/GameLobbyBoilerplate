@@ -36,6 +36,10 @@ newG({
       return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
   }
     return
+
+    //When it returns an object it doesn't start the game and responds with the object instead of a state
+
+    //When it returns undefined it returns state and the game is running
   }
 },
 
