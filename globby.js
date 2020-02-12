@@ -50,7 +50,8 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-                    return g.players.length < g.maxPlayers && !st.started && maxPlayers === minPlayers || minPlayers < maxPlayers  && st.players.length < maxPlayers
+                    return g.players.length < g.maxPlayers && !st.started && maxPlayers === minPlayers 
+                    || minPlayers < maxPlayers  && st.players.length < maxPlayers //This should be !serverFunction(minPlayers,maxPlayers,st.players.length,st)
                 })
                 if(ga){
                     ga.join(playerId);
