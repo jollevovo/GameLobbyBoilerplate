@@ -16,8 +16,8 @@ newG({
     
     //State Change on Move
   },
-  maxPlayers:3, // Number of Players you want in a single game
   minPlayers:2,
+  maxPlayers:3, // Number of Players you want in a single game
   timeFunction:function(state){
     state.test +=5;
     //State Change on every frame
@@ -30,7 +30,12 @@ newG({
   },
   disconnectFunction:function(state,playerRef){
     console.log('disconnected  ', playerRef)
-
+  },
+  serverFunction:function(minPlayers,maxPlayers,currentPlayers,state){
+    if(currentPlayers.length < 5){
+      return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
+  }
+    return
   }
 },
 
