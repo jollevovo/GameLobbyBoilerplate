@@ -29,6 +29,8 @@ const newGame = function(properties){
             return {message:"Not Enough Players To Start",required:maxPlayers,current:currentPlayers.length}
         }
 
+        state.started = true;
+
         return;
     }
 
@@ -50,7 +52,7 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-                    return g.players.length < g.maxPlayers && !st.started && maxPlayers === minPlayers || minPlayers < maxPlayers  && st.players.length < maxPlayers
+                    return !serverFunction(minPlayers,maxPlayers,st.players.length,st)
                 })
                 if(ga){
                     ga.join(playerId);
@@ -86,7 +88,6 @@ const newGame = function(properties){
   
             let state = JSON.parse(JSON.stringify(baseState));
             state.players = this.players;
-            state.started = false;
             
   
             this.playerId = '';
@@ -104,7 +105,6 @@ const newGame = function(properties){
                 if(blocker !=undefined){
                     return blocker;
                 }
-                state.started = true;
 
                 moveFunction(player, move,state)
                 return this.returnState(playerId);
@@ -118,7 +118,6 @@ const newGame = function(properties){
                     return blocker;
                 }
 
-                state.started = true;
                 if(timeFunction != undefined){
                     timeFunction(state,playerId)
                 }
