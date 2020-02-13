@@ -25,10 +25,11 @@ const newGame = function(properties){
         if(minPlayers < maxPlayers && currentPlayers.length < minPlayers){
             return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
         }
-        else if(currentPlayers.length < maxPlayers && state.started === false && maxPlayers === minPlayers){
+        else if(currentPlayers.length < maxPlayers && !state.started && maxPlayers === minPlayers){
             return {message:"Not Enough Players To Start",required:maxPlayers,current:currentPlayers.length}
         }
 
+        state.started = true;
         return;
     }
 
