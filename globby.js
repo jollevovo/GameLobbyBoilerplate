@@ -17,20 +17,28 @@ const newGame = function(properties){
 
     }
 
-    const serverFunction = properties.serverFunction || function(minPlayers,maxPlayers,currentPlayers,state){
+    const gameStartFunction = properties.gameStartFunction || function(minPlayers,maxPlayers,currentPlayers,state){
         /* 
             Return Undefined to continue and an object to block
         */
 
-        if(minPlayers < maxPlayers && currentPlayers.length < minPlayers){
-            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
+        if(minPlayers <= currentPlayers.length){
+            return;// Return undefined when you want the game to start
         }
-        else if(currentPlayers.length < maxPlayers && !state.started && maxPlayers === minPlayers){
-            return {message:"Not Enough Players To Start",required:maxPlayers,current:currentPlayers.length}
+        else{
+            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length} // Return Object while you want to block the game start
         }
+        
+    }
 
-        state.started = true;
-        return;
+    const allowJoinFunction = properties.allowJoinFunction || function(minPlayers,maxPlayers,currentPlayers,state){
+        if(currentPlayers.length < maxPlayers){
+            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}; // Return object while you want users to join the same room
+        }
+        else{
+            return //Return undefined when you want new room
+        }
+        
     }
 
     const lobby = function(){
@@ -51,7 +59,7 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-                    return serverFunction(minPlayers,maxPlayers,st.players,st)
+                    return allowJoinFunction(minPlayers,maxPlayers,st.players,st)
                 })
                 if(ga){
                     ga.join(playerId);
@@ -97,7 +105,7 @@ const newGame = function(properties){
                     return pl.id == playerId
                 })
 
-                const blocker = serverFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = gameStartFunction(minPlayers,maxPlayers,state.players,state)
 
                 if(blocker !=undefined){
                     return blocker;
@@ -109,7 +117,7 @@ const newGame = function(properties){
 
             this.timeFunction = (playerId) => {
                 
-                const blocker = serverFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = gameStartFunction(minPlayers,maxPlayers,state.players,state)
 
                 if(blocker !=undefined){
                     return blocker;

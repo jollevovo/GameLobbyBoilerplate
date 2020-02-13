@@ -15,7 +15,7 @@ newG({
   moveFunction:function(player,move,state){
     //State Change on Move
   },
-  
+  minPlayers:2,
   maxPlayers:3, // Number of Players you want in a single game
   timeFunction:function(state){
     state.test +=5;
@@ -30,17 +30,6 @@ newG({
   disconnectFunction:function(state,playerRef){
     console.log('disconnected  ', playerRef)
   }
-  ,
-  // serverFunction:function(minPlayers,maxPlayers,currentPlayers,state){
-  //   if(currentPlayers.length < 5){
-  //     return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
-  // }
-  //   return
-
-  //   //When it returns an object it doesn't start the game and responds with the object instead of a state
-
-  //   //When it returns undefined it returns state and the game is running
-  // }
 },
 
 io)
