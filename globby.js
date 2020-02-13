@@ -21,9 +21,22 @@ const newGame = function(properties){
         /* 
             Return Undefined to continue and an object to block
         */
+        if(minPlayers == maxPlayers){
+            if(!state.started && maxPlayers <= currentPlayers.length){
+                console.log('tul')
+                return 
+            }
+            else if(!state.started){
+                return {message:"Not Enough Players",required:minPlayers,current:currentPlayers.length};
 
-        if(minPlayers <= currentPlayers.length){
-            return;// Return undefined when you want the game to start
+            }
+            else{
+                return;
+            }
+        }
+        else if(minPlayers <= currentPlayers.length){
+            state.started = true;
+            return;// Return undefined when you want to start game
         }
         else{
             return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length} // Return Object while you want to block the game start
