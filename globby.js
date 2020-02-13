@@ -25,10 +25,11 @@ const newGame = function(properties){
         if(minPlayers < maxPlayers && currentPlayers.length < minPlayers){
             return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}
         }
-        else if(currentPlayers.length < maxPlayers && state.started === false && maxPlayers === minPlayers){
+        else if(currentPlayers.length < maxPlayers && !state.started && maxPlayers === minPlayers){
             return {message:"Not Enough Players To Start",required:maxPlayers,current:currentPlayers.length}
         }
 
+        state.started = true;
         return;
     }
 
@@ -50,7 +51,7 @@ const newGame = function(properties){
             if(!ga){
                 ga = this.games.find((g) => {
                     let st =  g.returnState(playerId);
-                    return g.players.length < g.maxPlayers && !st.started && maxPlayers === minPlayers || minPlayers < maxPlayers  && st.players.length < maxPlayers
+                    return serverFunction(minPlayers,maxPlayers,st.players,st)
                 })
                 if(ga){
                     ga.join(playerId);
@@ -86,12 +87,9 @@ const newGame = function(properties){
   
             let state = JSON.parse(JSON.stringify(baseState));
             state.players = this.players;
-            state.started = false;
             
   
             this.playerId = '';
-            
-            this.maxPlayers = maxPlayers;
             this.players = [];
   
             this.move = (playerId,move) => {
@@ -104,7 +102,6 @@ const newGame = function(properties){
                 if(blocker !=undefined){
                     return blocker;
                 }
-                state.started = true;
 
                 moveFunction(player, move,state)
                 return this.returnState(playerId);
@@ -118,7 +115,6 @@ const newGame = function(properties){
                     return blocker;
                 }
 
-                state.started = true;
                 if(timeFunction != undefined){
                     timeFunction(state,playerId)
                 }
@@ -139,7 +135,6 @@ const newGame = function(properties){
             }
   
             this.join = (playerId) => {
-                if(this.players.length < this.maxPlayers){
                     const player = {id:playerId,ref:'player'+(this.players.length+1)}
                     this.players.push(player);
   
@@ -147,10 +142,7 @@ const newGame = function(properties){
                     
                     connectFunction(state,player.ref)
                     return this.returnState(playerId);
-                }
-                else{
-                    return undefined
-                }
+     
             }
             this.disconnect = (playerId) => {
                     let pl =this.players.find((pl) => {
