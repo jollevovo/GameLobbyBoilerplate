@@ -19,7 +19,7 @@ const newGame = function(properties){
 
     const startBlockerFunction = properties.startBlockerFunction || function(minPlayers,maxPlayers,currentPlayers,state){
         /* 
-            Return Undefined to continue and an object to block
+            Return Undefined for a new game and an object to join the old one
         */
         if(minPlayers == maxPlayers){
             //Nqma custom minPlayers ot suzdatelq
@@ -44,8 +44,10 @@ const newGame = function(properties){
         }
     }
 
-    const allowJoinFunction = properties.allowJoinFunction || function(minPlayers,maxPlayers,currentPlayers,state){
-        
+    const allowJoinFunction = properties.joinBlockerFunction || function(minPlayers,maxPlayers,currentPlayers,state){
+        /*
+        Return true if you want the user to join the same room AND false to return a new room
+        */
         if(minPlayers == maxPlayers){
             //Nqma custom minPlayers ot suzdatelq
             if(!state.started){
