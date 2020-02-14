@@ -17,40 +17,54 @@ const newGame = function(properties){
 
     }
 
-    const gameStartFunction = properties.gameStartFunction || function(minPlayers,maxPlayers,currentPlayers,state){
+    const startBlockerFunction = properties.startBlockerFunction || function(minPlayers,maxPlayers,currentPlayers,state){
         /* 
             Return Undefined to continue and an object to block
         */
         if(minPlayers == maxPlayers){
-            if(!state.started && maxPlayers <= currentPlayers.length){
-                console.log('tul')
-                return 
-            }
-            else if(!state.started){
-                return {message:"Not Enough Players",required:minPlayers,current:currentPlayers.length};
-
-            }
-            else{
+            //Nqma custom minPlayers ot suzdatelq
+            if(state.started){
                 return;
             }
-        }
-        else if(minPlayers <= currentPlayers.length){
-            state.started = true;
-            return;// Return undefined when you want to start game
+            else if(!state.started && currentPlayers.length == maxPlayers){
+                state.started = true;
+            }
+            else{
+                return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}; // Return object while you want users to join the same room
+            }
         }
         else{
-            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length} // Return Object while you want to block the game start
+            if(currentPlayers.length < minPlayers && !state.started){
+                return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}; // Return object while you want users to join the same room
+            }
+            else{
+                state.started = true;
+                return;// Return undefined when you want the user to join new game
+            }
         }
-        
     }
 
     const allowJoinFunction = properties.allowJoinFunction || function(minPlayers,maxPlayers,currentPlayers,state){
-        if(currentPlayers.length < maxPlayers){
-            return {message:"Not Enough Players To Start",required:minPlayers,current:currentPlayers.length}; // Return object while you want users to join the same room
+        
+        if(minPlayers == maxPlayers){
+            //Nqma custom minPlayers ot suzdatelq
+            if(!state.started){
+                return true // Return true if you want users to join the same room
+            }
+            else{
+                return false //Return false if you want a new room to be open for the user
+            }
         }
         else{
-            return //Return undefined when you want new room
+            if(currentPlayers.length < maxPlayers){
+                return true;// Return false when you want the user to join a new game
+            }
+            else{
+                return false;
+            }
         }
+
+
         
     }
 
@@ -118,7 +132,7 @@ const newGame = function(properties){
                     return pl.id == playerId
                 })
 
-                const blocker = gameStartFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.players,state)
 
                 if(blocker !=undefined){
                     return blocker;
@@ -130,7 +144,7 @@ const newGame = function(properties){
 
             this.timeFunction = (playerId) => {
                 
-                const blocker = gameStartFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.players,state)
 
                 if(blocker !=undefined){
                     return blocker;
