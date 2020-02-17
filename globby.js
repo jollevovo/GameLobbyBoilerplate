@@ -123,18 +123,18 @@ const newGame = function(properties){
     function g(){
   
             let state = JSON.parse(JSON.stringify(baseState));
-            state.players = this.players;
+            state.playersConfigArray = this.players;
             
   
             this.playerId = '';
             this.players = [];
   
             this.move = (playerId,move) => {
-                let player = state.players.find((pl) => {
+                let player = state.playersConfigArray.find((pl) => {
                     return pl.id == playerId
                 })
 
-                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.playersConfigArray,state)
 
                 if(blocker !=undefined){
                     return blocker;
@@ -146,7 +146,7 @@ const newGame = function(properties){
 
             this.timeFunction = (playerId) => {
                 
-                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.players,state)
+                const blocker = startBlockerFunction(minPlayers,maxPlayers,state.playersConfigArray,state)
 
                 if(blocker !=undefined){
                     return blocker;
@@ -161,7 +161,7 @@ const newGame = function(properties){
   
             this.returnState = (playerId) => {
                 let copyState =  JSON.parse(JSON.stringify(state));
-                let player = state.players.find((pl) => {
+                let player = state.playersConfigArray.find((pl) => {
                     return pl.id == playerId
                 })
                 if(player){
@@ -175,7 +175,7 @@ const newGame = function(properties){
                     const player = {id:playerId,ref:'player'+(this.players.length+1)}
                     this.players.push(player);
   
-                    state.players = this.players;
+                    state.playersConfigArray = this.players;
                     
                     connectFunction(state,player.ref)
                     return this.returnState(playerId);
@@ -246,8 +246,8 @@ module.exports.newIOServer = function newServer(properties,io){
         
         socket.on('move', (data) =>{
           let state = lobby.move(socket.id,data);
-          if(state.players){
-            state.players.forEach((pl) => {
+          if(state.playersConfigArray){
+            state.playersConfigArray.forEach((pl) => {
                 io.to(pl.id).emit('returnState', state)
              })
           }

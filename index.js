@@ -3,7 +3,6 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const newG = require('./globby').newIOServer;
-let delayStartBlocker = require('./blockers').delayStartBlocker;
 
 
 app.use('/static', express.static('public'))
@@ -21,19 +20,7 @@ newG({
     state.test +=5;
     //State Change on every frame
   },
-  startBlockerFunction:delayStartBlocker(100),
-  joinBlockerFunction:function(minPlayers,maxPlayers,currentPlayers,state){
-            /*
-        Return true if you want the user to join the same room AND false to return a new room
-        */
-    console.log(state)
-    if(state.started){
-      return false;
-    }
-    else{
-      return true;
-    }
-  },
+
   statePresenter:function(state,playerId){
     return state;
   },
