@@ -77,6 +77,30 @@ const newGame = function(properties){
         this.gamesNum = function(){
             return games.length
         }
+
+        this.joinSpecificGame = function(gameId,playerId){
+            let ga = this.games.find((g) => {
+                return g.players.find((player) => {
+                    return player.id == playerId;
+                })
+            })
+            
+            if(!ga){
+                ga = this.games.find((g) => {
+                    let st =  g.returnState(playerId);
+                    return allowJoinFunction(minPlayers,maxPlayers,st.players,st)
+                })
+
+                if(ga){
+                    ga.join(playerId);
+                }
+            }
+            else{
+                ga = new g(gameId);
+                this.games.push(ga)
+                ga.join(playerId)
+            }
+        }
   
         this.joinGame = function(playerId){
             let ga = this.games.find((g) => {
@@ -120,12 +144,12 @@ const newGame = function(properties){
         }
     }
   
-    function g(){
+    function g(id){
   
             let state = JSON.parse(JSON.stringify(baseState));
             state.players = this.players;
             
-  
+            this.id = id;
             this.playerId = '';
             this.players = [];
   
@@ -241,7 +265,7 @@ module.exports.newIOServer = function newServer(properties,io){
             }
 
         })
-
+        
         lobby.joinGame(socket.id)
         
         socket.on('move', (data) =>{

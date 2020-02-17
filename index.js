@@ -16,44 +16,45 @@ newG({
   moveFunction:function(player,move,state){
     //State Change on Move
   },
-  maxPlayers:3, // Number of Players you want in a single game
+  minPlayers:1,
+  maxPlayers:5, // Number of Players you want in a single game
   timeFunction:function(state){
     state.test +=5;
     //State Change on every frame
   },
   startBlockerFunction:delayStartBlocker(100),
-  joinBlockerFunction:function(minPlayers,maxPlayers,currentPlayers,state){
-            /*
-        Return true if you want the user to join the same room AND false to return a new room
-        */
-    console.log(state)
-    if(state.started){
-      return false;
-    }
-    else{
-      return true;
-    }
-  },
-  statePresenter:function(state,playerId){
+  // joinBlockerFunction:function(minPlayers,maxPlayers,currentPlayers,state){
+  //     /*
+  //       Return true if you want the user to join the same room AND false to return a new room
+  //     */
+  //   if(state.started){
+  //     return false;
+  //   }
+  //   else{
+  //     return true;
+  //   }
+  // },
+  statePresenter:function(state,playerRef){
+    
     return state;
   },
   connectFunction:function(state,playerRef){
+    state[playerRef] = {
+      x:50,
+      y:50
+    }
   },
   disconnectFunction:function(state,playerRef){
+    state[playerRef] = undefined;
   }
 },
 
 io)
 
 
-
-
-
 app.get('/', function(req, res){
     return res.status(200).sendFile(__dirname + '/index.html');
   });
-
-
 
 
 http.listen(3005, function(){
