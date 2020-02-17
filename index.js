@@ -3,7 +3,6 @@ const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const newG = require('./globby').newIOServer;
-let delayStartBlocker = require('./blockers').delayStartBlocker;
 
 
 app.use('/static', express.static('public'))
