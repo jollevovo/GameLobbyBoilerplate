@@ -4,6 +4,15 @@ module.exports.delayStartBlocker = function(delay){
         if(state.started){
             return undefined;
         }
+
+        if(minPlayers > currentPlayers.length){
+            return {message:"Not Enough Players to Start", minPlayers:minPlayers, currentPlayers:currentPlayers.length}
+        }
+
+        if(currentPlayers.length >= maxPlayers){
+            state.started = true;
+            return undefined
+        }
         
         if(state.delayCounter == undefined){
             state.delayCounter = delay;
